@@ -1,7 +1,8 @@
 package codingdojo;
 
-public interface CompanyDataLayer {
+public interface CustomerDataLayer {
     CustomerMatches loadCompanyCustomer(String externalId, String companyNumber);
+    CustomerMatches loadPersonCustomer(String externalId);
 
     Customer updateCustomerRecord(Customer customer);
 
@@ -9,7 +10,6 @@ public interface CompanyDataLayer {
 
     void createConsumerMappingRecord(Consumer consumer, Customer customer);
 
-    void renameRelation(String customer, Relation consumerRelation);
+    void updateShoppingList(String name, ShoppingList consumerShoppingList);
 
-    CustomerMatches loadPersonCustomer(String externalId);
 }

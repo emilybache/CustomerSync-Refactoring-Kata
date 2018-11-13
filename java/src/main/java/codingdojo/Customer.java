@@ -1,5 +1,6 @@
 package codingdojo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
@@ -7,7 +8,7 @@ public class Customer {
     private String masterExternalId;
     private Address address;
     private String preferredStore;
-    private List<Relation> relations;
+    private List<ShoppingList> shoppingLists = new ArrayList<>();
     private String internalId;
     private String name;
     private CustomerType customerType;
@@ -53,12 +54,12 @@ public class Customer {
         return customerType;
     }
 
-    public List<Relation> getRelations() {
-        return relations;
+    public List<ShoppingList> getShoppingLists() {
+        return shoppingLists;
     }
 
-    public void setRelations(List<Relation> relations) {
-        this.relations = relations;
+    public void setShoppingLists(List<ShoppingList> shoppingLists) {
+        this.shoppingLists = shoppingLists;
     }
 
     public String getName() {
@@ -75,5 +76,13 @@ public class Customer {
 
     public String getExternalId() {
         return externalId;
+    }
+
+    public void setCustomerType(CustomerType customerType) {
+        this.customerType = customerType;
+    }
+
+    public void setInternalId(String internalId) {
+        this.internalId = internalId;
     }
 }

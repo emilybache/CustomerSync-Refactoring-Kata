@@ -2,15 +2,15 @@ package codingdojo;
 
 import java.util.List;
 
-public class ConsumerHelper {
+public class ConsumerSync {
 
-    private final CompanyDataLayer companyDataLayer;
+    private final CustomerDataLayer customerDataLayer;
 
-    public ConsumerHelper(CompanyDataLayer companyDataLayer) {
-        this.companyDataLayer = companyDataLayer;
+    public ConsumerSync(CustomerDataLayer customerDataLayer) {
+        this.customerDataLayer = customerDataLayer;
     }
 
-    public boolean handle(Consumer consumer) {
+    public boolean syncWithDataLayer(Consumer consumer) {
 
         CustomerMatches customerMatches;
         if (consumer.isCompany()) {
@@ -50,17 +50,17 @@ public class ConsumerHelper {
     }
 
     private void updateRelations(Consumer consumer, Customer customer) {
-        List<Relation> consumerRelations = consumer.getRelations();
-        List<Relation> customerRelations = customer.getRelations();
-        for (Relation consumerRelation : consumerRelations) {
-            if (!customerRelations.contains(consumerRelation)) {
-                this.companyDataLayer.renameRelation(customer.getName(), consumerRelation);
+        List<ShoppingList> consumerShoppingLists = consumer.getShoppingLists();
+        List<ShoppingList> customerShoppingLists = customer.getShoppingLists();
+        for (ShoppingList consumerShoppingList : consumerShoppingLists) {
+            if (!customerShoppingLists.contains(consumerShoppingList)) {
+                this.customerDataLayer.updateShoppingList(customer.getName(), consumerShoppingList);
             }
         }
     }
 
     private Customer updateCustomer(Customer customer) {
-        return this.companyDataLayer.updateCustomerRecord(customer);
+        return this.customerDataLayer.updateCustomerRecord(customer);
     }
 
     private void updateDuplicate(Consumer consumer, Customer duplicate) {
@@ -84,12 +84,12 @@ public class ConsumerHelper {
     }
 
     private Customer createCustomer(Customer customer) {
-        return this.companyDataLayer.createCustomerRecord(customer);
+        return this.customerDataLayer.createCustomerRecord(customer);
     }
 
     private void populateFields(Consumer consumer, Customer customer) {
         customer.setName(consumer.getName());
-        this.companyDataLayer.createConsumerMappingRecord(consumer, customer);
+        this.customerDataLayer.createConsumerMappingRecord(consumer, customer);
     }
 
     private void updateContactInfo(Consumer consumer, Customer customer) {
@@ -101,7 +101,7 @@ public class ConsumerHelper {
         final String externalId = consumer.getExternalId();
         final String companyNumber = consumer.getCompanyNumber();
 
-        CustomerMatches customerMatches = companyDataLayer.loadCompanyCustomer(externalId, companyNumber);
+        CustomerMatches customerMatches = customerDataLayer.loadCompanyCustomer(externalId, companyNumber);
 
         if (!CustomerType.COMPANY.equals(customerMatches.getCustomer().getCustomerType())) {
             throw new ConflictException("Existing customer for consumer " + externalId + " already exists and is not a company");
@@ -128,7 +128,7 @@ public class ConsumerHelper {
     public CustomerMatches loadPerson(Consumer consumer) {
         final String externalId = consumer.getExternalId();
 
-        CustomerMatches customerMatches = companyDataLayer.loadPersonCustomer(externalId);
+        CustomerMatches customerMatches = customerDataLayer.loadPersonCustomer(externalId);
 
         if (!CustomerType.PERSON.equals(customerMatches.getCustomer().getCustomerType())) {
             throw new ConflictException("Existing customer for consumer " + externalId + " already exists and is not a person");

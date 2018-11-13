@@ -6,10 +6,9 @@ public class Consumer {
     private Address address;
     private String name;
     private String preferredStore;
-    private List<Relation> relations;
+    private List<ShoppingList> shoppingLists;
     private String externalId;
     private String companyNumber;
-    private String personalNumber;
 
     public String getExternalId() {
         return externalId;
@@ -20,7 +19,7 @@ public class Consumer {
     }
 
     public boolean isCompany() {
-        return false;
+        return companyNumber != null;
     }
 
     public Address getPostalAddress() {
@@ -43,12 +42,23 @@ public class Consumer {
         this.preferredStore = preferredStore;
     }
 
-    public List<Relation> getRelations() {
-        return relations;
+    public List<ShoppingList> getShoppingLists() {
+        return shoppingLists;
     }
 
-    public void setRelations(List<Relation> relations) {
-        this.relations = relations;
+    public void setShoppingLists(List<ShoppingList> shoppingLists) {
+        this.shoppingLists = shoppingLists;
     }
 
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
+    public void setCompanyNumber(String companyNumber) {
+        this.companyNumber = companyNumber;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 }
