@@ -85,4 +85,8 @@ public class Customer {
     public void setInternalId(String internalId) {
         this.internalId = internalId;
     }
+
+    public void addShoppingList(ShoppingList consumerShoppingList) {
+        this.shoppingLists.add(consumerShoppingList);
+    }
 }

@@ -4,10 +4,14 @@ import java.util.List;
 
 public class ConsumerSync {
 
-    private final CustomerDataLayer customerDataLayer;
+    private final CustomerDataAccess customerDataAccess;
 
     public ConsumerSync(CustomerDataLayer customerDataLayer) {
-        this.customerDataLayer = customerDataLayer;
+        this(new CustomerDataAccess(customerDataLayer));
+    }
+
+    public ConsumerSync(CustomerDataAccess db) {
+        this.customerDataAccess = db;
     }
 
     public boolean syncWithDataLayer(Consumer consumer) {
@@ -54,13 +58,13 @@ public class ConsumerSync {
         List<ShoppingList> customerShoppingLists = customer.getShoppingLists();
         for (ShoppingList consumerShoppingList : consumerShoppingLists) {
             if (!customerShoppingLists.contains(consumerShoppingList)) {
-                this.customerDataLayer.updateShoppingList(customer.getName(), consumerShoppingList);
+                this.customerDataAccess.updateShoppingList(customer, consumerShoppingList);
             }
         }
     }
 
     private Customer updateCustomer(Customer customer) {
-        return this.customerDataLayer.updateCustomerRecord(customer);
+        return this.customerDataAccess.updateCustomerRecord(customer);
     }
 
     private void updateDuplicate(Consumer consumer, Customer duplicate) {
@@ -84,12 +88,11 @@ public class ConsumerSync {
     }
 
     private Customer createCustomer(Customer customer) {
-        return this.customerDataLayer.createCustomerRecord(customer);
+        return this.customerDataAccess.createCustomerRecord(customer);
     }
 
     private void populateFields(Consumer consumer, Customer customer) {
         customer.setName(consumer.getName());
-        this.customerDataLayer.createConsumerMappingRecord(consumer, customer);
     }
 
     private void updateContactInfo(Consumer consumer, Customer customer) {
@@ -101,7 +104,7 @@ public class ConsumerSync {
         final String externalId = consumer.getExternalId();
         final String companyNumber = consumer.getCompanyNumber();
 
-        CustomerMatches customerMatches = customerDataLayer.loadCompanyCustomer(externalId, companyNumber);
+        CustomerMatches customerMatches = customerDataAccess.loadCompanyCustomer(externalId, companyNumber);
 
         if (!CustomerType.COMPANY.equals(customerMatches.getCustomer().getCustomerType())) {
             throw new ConflictException("Existing customer for consumer " + externalId + " already exists and is not a company");
@@ -110,7 +113,10 @@ public class ConsumerSync {
         if ("ExternalId".equals(customerMatches.getMatchTerm())) {
             String customerCompanyNumber = customerMatches.getCustomer().getCompanyNumber();
             if (!companyNumber.equals(customerCompanyNumber)) {
-                throw new ConflictException("Existing customer for consumer " + externalId + " doesn't match company number " + companyNumber + " instead found " + customerCompanyNumber);
+                customerMatches.getCustomer().setMasterExternalId(null);
+                customerMatches.addDuplicate(customerMatches.getCustomer());
+                customerMatches.setCustomer(null);
+                customerMatches.setMatchTerm(null);
             }
         } else if ("CompanyNumber".equals(customerMatches.getMatchTerm())) {
             String customerExternalId = customerMatches.getCustomer().getExternalId();
@@ -128,7 +134,7 @@ public class ConsumerSync {
     public CustomerMatches loadPerson(Consumer consumer) {
         final String externalId = consumer.getExternalId();
 
-        CustomerMatches customerMatches = customerDataLayer.loadPersonCustomer(externalId);
+        CustomerMatches customerMatches = customerDataAccess.loadPersonCustomer(externalId);
 
         if (!CustomerType.PERSON.equals(customerMatches.getCustomer().getCustomerType())) {
             throw new ConflictException("Existing customer for consumer " + externalId + " already exists and is not a person");

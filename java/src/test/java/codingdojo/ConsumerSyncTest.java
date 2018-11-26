@@ -26,7 +26,7 @@ public class ConsumerSyncTest {
         customerMatches.setCustomer(customer);
         customerMatches.setMatchTerm("ExternalId");
 
-        CustomerDataLayer db = mock(CustomerDataLayer.class);
+        CustomerDataAccess db = mock(CustomerDataAccess.class);
         when(db.loadCompanyCustomer(consumer.getExternalId(), consumer.getCompanyNumber())).thenReturn(customerMatches);
         ConsumerSync sut = new ConsumerSync(db);
 
