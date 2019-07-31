@@ -1,0 +1,35 @@
+BEFORE:
+Fake Database.
+All Customers {
+
+}
+All Shopping Lists
+[]
+SYNCING THIS:
+ExternalCustomer {
+    externalId='12345'
+    companyNumber='470813-8895'
+    name='Acme Inc.'
+    preferredStore='null'
+    address='123 main st, SE-123 45 Helsingborg'
+    shoppingLists=[[lipstick, blusher]]
+}
+AFTER:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='12345'
+        masterExternalId='12345'
+        companyNumber='470813-8895'
+        internalId='internalId0'
+        name='Acme Inc.'
+        customerType=COMPANY
+        preferredStore='null'
+        address='123 main st, SE-123 45 Helsingborg'
+        shoppingLists=[[lipstick, blusher]]
+    }
+
+}
+All Shopping Lists
+[[lipstick, blusher]]

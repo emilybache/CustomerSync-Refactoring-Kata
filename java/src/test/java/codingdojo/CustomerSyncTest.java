@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class CustomerSyncTest {
@@ -81,6 +82,26 @@ public class CustomerSyncTest {
         boolean created = sut.syncWithDataLayer(externalCustomer);
 
         assertFalse(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
+    @Test
+    public void testSyncNewCompanyCustomer(){
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCompany();
+        externalCustomer.setExternalId(externalId);
+
+        FakeDatabase db = new FakeDatabase();
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertTrue(created);
         printAfterState(db, toAssert);
         Approvals.verify(toAssert);
     }
