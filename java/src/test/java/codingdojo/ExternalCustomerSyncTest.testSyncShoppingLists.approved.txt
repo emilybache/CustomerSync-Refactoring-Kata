@@ -1,0 +1,53 @@
+BEFORE:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='12345'
+        masterExternalId='null'
+        companyNumber='470813-8895'
+        internalId='45435'
+        name='null'
+        customerType=COMPANY
+        preferredStore='null'
+        address='null'
+        shoppingLists=[[eyeliner, blusher]]
+    }
+
+}
+All Shopping Lists
+[[eyeliner, blusher]]
+SYNCING THIS:
+ExternalCustomer {
+    externalId='12345'
+    companyNumber='470813-8895'
+    name='Standard External Customer'
+    preferredStore='Nordstan'
+    address='123 main st, SE-123 45 Helsingborg'
+    shoppingLists=[[lipstick, blusher]]
+}
+AFTER:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='12345'
+        masterExternalId='null'
+        companyNumber='470813-8895'
+        internalId='45435'
+        name='Standard External Customer'
+        customerType=COMPANY
+        preferredStore='Nordstan'
+        address='123 main st, SE-123 45 Helsingborg'
+        shoppingLists=[
+            [eyeliner, blusher]
+            [lipstick, blusher]
+        ]
+    }
+
+}
+All Shopping Lists
+[
+    [eyeliner, blusher]
+    [lipstick, blusher]
+]
