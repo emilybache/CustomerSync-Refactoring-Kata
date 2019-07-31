@@ -93,6 +93,12 @@ public class CustomerSync {
 
     private void populateFields(ExternalCustomer externalCustomer, Customer customer) {
         customer.setName(externalCustomer.getName());
+        if (externalCustomer.isCompany()) {
+            customer.setCompanyNumber(externalCustomer.getCompanyNumber());
+            customer.setCustomerType(CustomerType.COMPANY);
+        } else {
+            customer.setCustomerType(CustomerType.PERSON);
+        }
     }
 
     private void updateContactInfo(ExternalCustomer externalCustomer, Customer customer) {
@@ -106,7 +112,7 @@ public class CustomerSync {
 
         CustomerMatches customerMatches = customerDataAccess.loadCompanyCustomer(externalId, companyNumber);
 
-        if (!CustomerType.COMPANY.equals(customerMatches.getCustomer().getCustomerType())) {
+        if (customerMatches.getCustomer() != null && !CustomerType.COMPANY.equals(customerMatches.getCustomer().getCustomerType())) {
             throw new ConflictException("Existing customer for externalCustomer " + externalId + " already exists and is not a company");
         }
 
