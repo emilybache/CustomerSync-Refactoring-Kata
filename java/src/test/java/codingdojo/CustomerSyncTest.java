@@ -126,7 +126,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void conflictException() {
+    public void conflictExceptionWhenExistingCustomerIsPerson() {
         String externalId = "12345";
 
         ExternalCustomer externalCustomer = createExternalCompany();
@@ -141,9 +141,13 @@ public class CustomerSyncTest {
         db.addCustomer(customer);
         CustomerSync sut = new CustomerSync(db);
 
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
         Assertions.assertThrows(ConflictException.class, () -> {
             sut.syncWithDataLayer(externalCustomer);
-        });
+        }, printAfterState(db, toAssert).toString());
+
+        Approvals.verify(toAssert);
     }
 
     private ExternalCustomer createExternalPrivatePerson() {
@@ -185,8 +189,9 @@ public class CustomerSyncTest {
         return toAssert;
     }
 
-    private void printAfterState(FakeDatabase db, StringBuilder toAssert) {
+    private StringBuilder printAfterState(FakeDatabase db, StringBuilder toAssert) {
         toAssert.append("\nAFTER:\n");
         toAssert.append(db.printContents());
+        return toAssert;
     }
 }
