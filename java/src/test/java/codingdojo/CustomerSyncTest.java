@@ -202,6 +202,32 @@ public class CustomerSyncTest {
     }
 
     @Test
+    public void syncByCompanyNumberWithConflictingExternalId(){
+        String companyNumber = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCompany();
+        externalCustomer.setCompanyNumber(companyNumber);
+        externalCustomer.setExternalId("45646");
+
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
+        customer.setCompanyNumber(companyNumber);
+        customer.setExternalId("conflicting id");
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        Assertions.assertThrows(ConflictException.class, () -> {
+            sut.syncWithDataLayer(externalCustomer);
+        }, printAfterState(db, toAssert).toString());
+
+        Approvals.verify(toAssert);
+    }
+
+    @Test
     public void conflictExceptionWhenExistingCustomerIsCompany() {
         String externalId = "12345";
 
