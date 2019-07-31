@@ -19,10 +19,10 @@ All Shopping Lists{
 []
 }
 SYNCING THIS:
-Consumer {
+ExternalCustomer {
     externalId='12345'
     companyNumber='470813-8895'
-    name='Standard Consumer'
+    name='Standard External Customer'
     preferredStore='Nordstan'
     address='123 main st, SE-123 45 Helsingborg'
     shoppingLists=[[lipstick, blusher]]}
@@ -35,7 +35,7 @@ All Customers {
         masterExternalId='null'
         companyNumber='470813-8895'
         internalId='45435'
-        name='Standard Consumer'
+        name='Standard External Customer'
         customerType=COMPANY
         preferredStore='Nordstan'
         address='123 main st, SE-123 45 Helsingborg'

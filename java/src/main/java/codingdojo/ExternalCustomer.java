@@ -2,7 +2,7 @@ package codingdojo;
 
 import java.util.List;
 
-public class Consumer {
+public class ExternalCustomer {
     private Address address;
     private String name;
     private String preferredStore;
@@ -62,15 +62,4 @@ public class Consumer {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "Consumer{" +
-                "address=" + address +
-                ", name='" + name + '\'' +
-                ", preferredStore='" + preferredStore + '\'' +
-                ", shoppingLists=" + shoppingLists +
-                ", externalId='" + externalId + '\'' +
-                ", companyNumber='" + companyNumber + '\'' +
-                '}';
-    }
 }
