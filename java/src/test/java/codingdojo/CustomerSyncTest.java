@@ -99,10 +99,9 @@ public class CustomerSyncTest {
     private ExternalCustomer createExternalCompany() {
         ExternalCustomer externalCustomer = new ExternalCustomer();
         externalCustomer.setExternalId("12345");
-        externalCustomer.setName("Standard External Customer");
+        externalCustomer.setName("Acme Inc.");
         externalCustomer.setAddress(new Address("123 main st", "Helsingborg", "SE-123 45"));
         externalCustomer.setCompanyNumber("470813-8895");
-        externalCustomer.setPreferredStore("Nordstan");
         externalCustomer.setShoppingLists(Arrays.asList(new ShoppingList("lipstick", "blusher")));
         return externalCustomer;
     }

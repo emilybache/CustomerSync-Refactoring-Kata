@@ -37,9 +37,9 @@ public class FakeDatabase implements CustomerDataLayer {
 
     @Override
     public Customer createCustomerRecord(Customer customer) {
-        String externalId = "externalId" + counter;
+        String internalId = "internalId" + counter;
         counter++;
-        customer.setExternalId(externalId);
+        customer.setInternalId(internalId);
         addCustomer(customer);
         return customer;
     }

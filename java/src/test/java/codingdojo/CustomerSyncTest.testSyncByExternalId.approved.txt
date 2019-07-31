@@ -21,8 +21,8 @@ SYNCING THIS:
 ExternalCustomer {
     externalId='12345'
     companyNumber='470813-8895'
-    name='Standard External Customer'
-    preferredStore='Nordstan'
+    name='Acme Inc.'
+    preferredStore='null'
     address='123 main st, SE-123 45 Helsingborg'
     shoppingLists=[[lipstick, blusher]]
 }
@@ -35,9 +35,9 @@ All Customers {
         masterExternalId='null'
         companyNumber='470813-8895'
         internalId='45435'
-        name='Standard External Customer'
+        name='Acme Inc.'
         customerType=COMPANY
-        preferredStore='Nordstan'
+        preferredStore='null'
         address='123 main st, SE-123 45 Helsingborg'
         shoppingLists=[[lipstick, blusher]]
     }
