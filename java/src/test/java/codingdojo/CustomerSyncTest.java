@@ -201,6 +201,32 @@ public class CustomerSyncTest {
         Approvals.verify(toAssert);
     }
 
+    @Test
+    public void conflictExceptionWhenExistingCustomerIsCompany() {
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalPrivatePerson();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = new Customer();
+        customer.setCustomerType(CustomerType.COMPANY);
+        customer.setCompanyNumber("32423-342");
+        customer.setInternalId("45435");
+        customer.setExternalId(externalId);
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        Assertions.assertThrows(ConflictException.class, () -> {
+            sut.syncWithDataLayer(externalCustomer);
+        }, printAfterState(db, toAssert).toString());
+
+        Approvals.verify(toAssert);
+    }
+
     private ExternalCustomer createExternalPrivatePerson() {
         ExternalCustomer externalCustomer = new ExternalCustomer();
         externalCustomer.setExternalId("12345");
