@@ -1,6 +1,7 @@
 package codingdojo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShoppingListPrinter {
     public static String printShoppingLists(List<ShoppingList> shoppingLists, String indent) {
@@ -8,16 +9,22 @@ public class ShoppingListPrinter {
             return "[]";
         }
         if (shoppingLists.size() == 1) {
-            return "[" + shoppingLists.get(0).getProducts().toString() + "]";
+            ShoppingList shoppingList = shoppingLists.get(0);
+            return "[" + printShoppingList(shoppingList) + "]";
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("\n" + indent + "shoppingLists:");
+        sb.append("[");
         for (ShoppingList shoppingList : shoppingLists) {
-            sb.append("\n" + indent + "- ");
-            sb.append(shoppingList.getProducts().toString());
+            sb.append("\n    " + indent);
+            sb.append(printShoppingList(shoppingList));
+
         }
         sb.append("\n" + indent + "]");
         return sb.toString();
+    }
+
+    private static String printShoppingList(ShoppingList shoppingList) {
+        return shoppingList.getProducts().toString();
     }
 }

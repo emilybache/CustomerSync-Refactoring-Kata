@@ -17,30 +17,69 @@ public class ExternalCustomerSyncTest {
         ExternalCustomer externalCustomer = createExternalCustomer();
         externalCustomer.setExternalId(externalId);
 
-        Customer customer = new Customer();
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
         customer.setExternalId(externalId);
-        customer.setCompanyNumber(externalCustomer.getCompanyNumber());
-        customer.setCustomerType(CustomerType.COMPANY);
-        customer.setInternalId("45435");
 
         FakeDatabase db = new FakeDatabase();
         db.addCustomer(customer);
         CustomerSync sut = new CustomerSync(db);
 
-        StringBuilder toAssert = new StringBuilder();
-        toAssert.append("BEFORE:\n");
-        toAssert.append(db.printContents());
-
-        toAssert.append("\nSYNCING THIS:\n");
-        toAssert.append(ConsumerPrinter.print(externalCustomer, ""));
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
 
         // ACT
         boolean created = sut.syncWithDataLayer(externalCustomer);
 
         assertFalse(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
+    @Test
+    public void testSyncShoppingLists(){
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCustomer();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
+        customer.setExternalId(externalId);
+        customer.setShoppingLists(Arrays.asList(new ShoppingList("eyeliner", "blusher")));
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertFalse(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
+    private StringBuilder printBeforeState(ExternalCustomer externalCustomer, FakeDatabase db) {
+        StringBuilder toAssert = new StringBuilder();
+        toAssert.append("BEFORE:\n");
+        toAssert.append(db.printContents());
+
+        toAssert.append("\nSYNCING THIS:\n");
+        toAssert.append(ExternalCustomerPrinter.print(externalCustomer, ""));
+        return toAssert;
+    }
+
+    private void printAfterState(FakeDatabase db, StringBuilder toAssert) {
         toAssert.append("\nAFTER:\n");
         toAssert.append(db.printContents());
-        Approvals.verify(toAssert);
+    }
+
+    private Customer createCustomerWithSameCompanyAs(ExternalCustomer externalCustomer) {
+        Customer customer = new Customer();
+        customer.setCompanyNumber(externalCustomer.getCompanyNumber());
+        customer.setCustomerType(CustomerType.COMPANY);
+        customer.setInternalId("45435");
+        return customer;
     }
 
     private ExternalCustomer createExternalCustomer() {

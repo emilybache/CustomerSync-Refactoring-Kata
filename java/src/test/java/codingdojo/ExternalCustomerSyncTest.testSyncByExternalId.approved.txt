@@ -15,9 +15,8 @@ All Customers {
     }
 
 }
-All Shopping Lists{
+All Shopping Lists
 []
-}
 SYNCING THIS:
 ExternalCustomer {
     externalId='12345'
@@ -25,7 +24,8 @@ ExternalCustomer {
     name='Standard External Customer'
     preferredStore='Nordstan'
     address='123 main st, SE-123 45 Helsingborg'
-    shoppingLists=[[lipstick, blusher]]}
+    shoppingLists=[[lipstick, blusher]]
+}
 AFTER:
 Fake Database.
 All Customers {
@@ -43,6 +43,5 @@ All Customers {
     }
 
 }
-All Shopping Lists{
+All Shopping Lists
 [[lipstick, blusher]]
-}

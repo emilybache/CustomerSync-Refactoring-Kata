@@ -86,11 +86,10 @@ public class FakeDatabase implements CustomerDataLayer {
         }
 
         sb.append("\n}");
-        sb.append("\nAll Shopping Lists{\n");
+        sb.append("\nAll Shopping Lists\n");
         List<ShoppingList> sortedShoppingLists = new ArrayList<>(shoppingLists);
-        sortedShoppingLists.sort((o1, o2) -> (String.join(", ", o1.getProducts()).compareTo(String.join(", ", o2.getProducts()))));
-        sb.append(ShoppingListPrinter.printShoppingLists(sortedShoppingLists, "    "));
-        sb.append("\n}");
+        sortedShoppingLists.sort(Comparator.comparing(o -> o.getProducts().toString()));
+        sb.append(ShoppingListPrinter.printShoppingLists(sortedShoppingLists, ""));
         return sb.toString();
     }
 }
