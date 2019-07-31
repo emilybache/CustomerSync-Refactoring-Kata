@@ -253,6 +253,40 @@ public class CustomerSyncTest {
         Approvals.verify(toAssert);
     }
 
+    @Test
+    public void syncCompanyByExternalIdWithNonMatchingMasterId(){
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCompany();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
+        customer.setExternalId(externalId);
+        customer.setName("company 1");
+
+        Customer customer2 = new Customer();
+        customer2.setCompanyNumber(externalCustomer.getCompanyNumber());
+        customer2.setCustomerType(CustomerType.COMPANY);
+        customer2.setInternalId("45435234");
+        customer2.setMasterExternalId(externalId);
+        customer2.setName("company 2");
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        db.addCustomer(customer2);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertFalse(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
+
     private ExternalCustomer createExternalPrivatePerson() {
         ExternalCustomer externalCustomer = new ExternalCustomer();
         externalCustomer.setExternalId("12345");

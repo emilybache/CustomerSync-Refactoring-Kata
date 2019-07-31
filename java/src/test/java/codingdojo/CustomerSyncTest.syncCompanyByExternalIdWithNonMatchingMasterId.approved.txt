@@ -1,0 +1,71 @@
+BEFORE:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='12345'
+        masterExternalId='null'
+        companyNumber='470813-8895'
+        internalId='45435'
+        name='company 1'
+        customerType=COMPANY
+        preferredStore='null'
+        address='null'
+        shoppingLists=[]
+    }
+
+    Customer {
+        externalId='null'
+        masterExternalId='12345'
+        companyNumber='470813-8895'
+        internalId='45435234'
+        name='company 2'
+        customerType=COMPANY
+        preferredStore='null'
+        address='null'
+        shoppingLists=[]
+    }
+
+}
+All Shopping Lists
+[]
+SYNCING THIS:
+ExternalCustomer {
+    externalId='12345'
+    companyNumber='470813-8895'
+    name='Acme Inc.'
+    preferredStore='null'
+    address='123 main st, SE-123 45 Helsingborg'
+    shoppingLists=[[lipstick, blusher]]
+}
+AFTER:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='12345'
+        masterExternalId='null'
+        companyNumber='470813-8895'
+        internalId='45435'
+        name='Acme Inc.'
+        customerType=COMPANY
+        preferredStore='null'
+        address='123 main st, SE-123 45 Helsingborg'
+        shoppingLists=[[lipstick, blusher]]
+    }
+
+    Customer {
+        externalId='null'
+        masterExternalId='12345'
+        companyNumber='470813-8895'
+        internalId='45435234'
+        name='Acme Inc.'
+        customerType=COMPANY
+        preferredStore='null'
+        address='null'
+        shoppingLists=[]
+    }
+
+}
+All Shopping Lists
+[[lipstick, blusher]]
