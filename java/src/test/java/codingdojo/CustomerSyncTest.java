@@ -14,7 +14,7 @@ public class CustomerSyncTest {
     public void testSyncByExternalId(){
         String externalId = "12345";
 
-        ExternalCustomer externalCustomer = createExternalCustomer();
+        ExternalCustomer externalCustomer = createExternalCompany();
         externalCustomer.setExternalId(externalId);
 
         Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
@@ -35,10 +35,36 @@ public class CustomerSyncTest {
     }
 
     @Test
+    public void testSyncPrivatePersonByExternalId(){
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalPrivatePerson();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = new Customer();
+        customer.setCustomerType(CustomerType.PERSON);
+        customer.setInternalId("67576");
+        customer.setExternalId(externalId);
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertFalse(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
+    @Test
     public void testSyncShoppingLists(){
         String externalId = "12345";
 
-        ExternalCustomer externalCustomer = createExternalCustomer();
+        ExternalCustomer externalCustomer = createExternalCompany();
         externalCustomer.setExternalId(externalId);
 
         Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
@@ -59,6 +85,36 @@ public class CustomerSyncTest {
         Approvals.verify(toAssert);
     }
 
+    private ExternalCustomer createExternalPrivatePerson() {
+        ExternalCustomer externalCustomer = new ExternalCustomer();
+        externalCustomer.setExternalId("12345");
+        externalCustomer.setName("Joe Bloggs");
+        externalCustomer.setAddress(new Address("123 main st", "Stockholm", "SE-123 45"));
+        externalCustomer.setPreferredStore("Nordstan");
+        externalCustomer.setShoppingLists(Arrays.asList(new ShoppingList("lipstick", "foundation")));
+        return externalCustomer;
+    }
+
+
+    private ExternalCustomer createExternalCompany() {
+        ExternalCustomer externalCustomer = new ExternalCustomer();
+        externalCustomer.setExternalId("12345");
+        externalCustomer.setName("Standard External Customer");
+        externalCustomer.setAddress(new Address("123 main st", "Helsingborg", "SE-123 45"));
+        externalCustomer.setCompanyNumber("470813-8895");
+        externalCustomer.setPreferredStore("Nordstan");
+        externalCustomer.setShoppingLists(Arrays.asList(new ShoppingList("lipstick", "blusher")));
+        return externalCustomer;
+    }
+
+    private Customer createCustomerWithSameCompanyAs(ExternalCustomer externalCustomer) {
+        Customer customer = new Customer();
+        customer.setCompanyNumber(externalCustomer.getCompanyNumber());
+        customer.setCustomerType(CustomerType.COMPANY);
+        customer.setInternalId("45435");
+        return customer;
+    }
+
     private StringBuilder printBeforeState(ExternalCustomer externalCustomer, FakeDatabase db) {
         StringBuilder toAssert = new StringBuilder();
         toAssert.append("BEFORE:\n");
@@ -72,24 +128,5 @@ public class CustomerSyncTest {
     private void printAfterState(FakeDatabase db, StringBuilder toAssert) {
         toAssert.append("\nAFTER:\n");
         toAssert.append(db.printContents());
-    }
-
-    private Customer createCustomerWithSameCompanyAs(ExternalCustomer externalCustomer) {
-        Customer customer = new Customer();
-        customer.setCompanyNumber(externalCustomer.getCompanyNumber());
-        customer.setCustomerType(CustomerType.COMPANY);
-        customer.setInternalId("45435");
-        return customer;
-    }
-
-    private ExternalCustomer createExternalCustomer() {
-        ExternalCustomer externalCustomer = new ExternalCustomer();
-        externalCustomer.setExternalId("12345");
-        externalCustomer.setName("Standard External Customer");
-        externalCustomer.setAddress(new Address("123 main st", "Helsingborg", "SE-123 45"));
-        externalCustomer.setCompanyNumber("470813-8895");
-        externalCustomer.setPreferredStore("Nordstan");
-        externalCustomer.setShoppingLists(Arrays.asList(new ShoppingList("lipstick", "blusher")));
-        return externalCustomer;
     }
 }
