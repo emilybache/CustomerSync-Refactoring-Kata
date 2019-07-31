@@ -67,10 +67,8 @@ public class FakeDatabase implements CustomerDataLayer {
         allCustomers.addAll(customersByMasterExternalId.values());
         allCustomers.addAll(customersByCompanyNumber.values());
         ArrayList<Customer> sortedList = new ArrayList<Customer>(allCustomers);
-        sortedList.sort((o1, o2) -> Comparator.comparing(Customer::getName)
-                .thenComparing(Customer::getExternalId)
-                .thenComparing(Customer::getMasterExternalId)
-                .thenComparing(Customer::getCompanyNumber)
+        sortedList.sort((o1, o2) -> Comparator.comparing(Customer::getInternalId)
+                .thenComparing(Customer::getName)
                 .compare(o1, o2));
         return sortedList;
     }

@@ -150,6 +150,31 @@ public class CustomerSyncTest {
         Approvals.verify(toAssert);
     }
 
+    @Test
+    public void syncByExternalIdButCompanyNumbersConflict(){
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCompany();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
+        customer.setExternalId(externalId);
+        customer.setCompanyNumber("000-3234");
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertTrue(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
     private ExternalCustomer createExternalPrivatePerson() {
         ExternalCustomer externalCustomer = new ExternalCustomer();
         externalCustomer.setExternalId("12345");
