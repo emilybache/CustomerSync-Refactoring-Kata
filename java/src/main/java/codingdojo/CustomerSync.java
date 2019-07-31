@@ -55,11 +55,8 @@ public class CustomerSync {
 
     private void updateRelations(ExternalCustomer externalCustomer, Customer customer) {
         List<ShoppingList> consumerShoppingLists = externalCustomer.getShoppingLists();
-        List<ShoppingList> customerShoppingLists = customer.getShoppingLists();
         for (ShoppingList consumerShoppingList : consumerShoppingLists) {
-            if (!customerShoppingLists.contains(consumerShoppingList)) {
-                this.customerDataAccess.updateShoppingList(customer, consumerShoppingList);
-            }
+            this.customerDataAccess.updateShoppingList(customer, consumerShoppingList);
         }
     }
 
