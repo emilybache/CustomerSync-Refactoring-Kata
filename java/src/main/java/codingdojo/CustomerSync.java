@@ -74,7 +74,7 @@ public class CustomerSync {
             duplicate.setMasterExternalId(externalCustomer.getExternalId());
         }
 
-        populateFields(externalCustomer, duplicate);
+        duplicate.setName(externalCustomer.getName());
 
         if (duplicate.getInternalId() == null) {
             createCustomer(duplicate);
