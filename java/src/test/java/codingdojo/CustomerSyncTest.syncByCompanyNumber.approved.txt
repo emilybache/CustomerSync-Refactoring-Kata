@@ -1,0 +1,53 @@
+BEFORE:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='null'
+        masterExternalId='null'
+        companyNumber='12345'
+        internalId='45435'
+        name='null'
+        customerType=COMPANY
+        preferredStore='null'
+        address='null'
+        shoppingLists=[[eyeliner, mascara, blue bombe eyeshadow]]
+    }
+
+}
+All Shopping Lists
+[[eyeliner, mascara, blue bombe eyeshadow]]
+SYNCING THIS:
+ExternalCustomer {
+    externalId='12345'
+    companyNumber='12345'
+    name='Acme Inc.'
+    preferredStore='null'
+    address='123 main st, SE-123 45 Helsingborg'
+    shoppingLists=[[lipstick, blusher]]
+}
+AFTER:
+Fake Database.
+All Customers {
+
+    Customer {
+        externalId='12345'
+        masterExternalId='12345'
+        companyNumber='12345'
+        internalId='45435'
+        name='Acme Inc.'
+        customerType=COMPANY
+        preferredStore='null'
+        address='123 main st, SE-123 45 Helsingborg'
+        shoppingLists=[
+            [eyeliner, mascara, blue bombe eyeshadow]
+            [lipstick, blusher]
+        ]
+    }
+
+}
+All Shopping Lists
+[
+    [eyeliner, mascara, blue bombe eyeshadow]
+    [lipstick, blusher]
+]

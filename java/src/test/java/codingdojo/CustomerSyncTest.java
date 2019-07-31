@@ -175,6 +175,32 @@ public class CustomerSyncTest {
         Approvals.verify(toAssert);
     }
 
+
+    @Test
+    public void syncByCompanyNumber(){
+        String companyNumber = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCompany();
+        externalCustomer.setCompanyNumber(companyNumber);
+
+        Customer customer = createCustomerWithSameCompanyAs(externalCustomer);
+        customer.setCompanyNumber(companyNumber);
+        customer.addShoppingList(new ShoppingList("eyeliner", "mascara", "blue bombe eyeshadow"));
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertFalse(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
     private ExternalCustomer createExternalPrivatePerson() {
         ExternalCustomer externalCustomer = new ExternalCustomer();
         externalCustomer.setExternalId("12345");
