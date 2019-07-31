@@ -9,4 +9,9 @@ public class ShoppingList {
     public ShoppingList(String... products) {
         this.products = Arrays.asList(products);
     }
+
+    public List<String> getProducts() {
+        return products;
+    }
+
 }

@@ -61,4 +61,16 @@ public class Consumer {
     public void setAddress(Address address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "Consumer{" +
+                "address=" + address +
+                ", name='" + name + '\'' +
+                ", preferredStore='" + preferredStore + '\'' +
+                ", shoppingLists=" + shoppingLists +
+                ", externalId='" + externalId + '\'' +
+                ", companyNumber='" + companyNumber + '\'' +
+                '}';
+    }
 }
