@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CustomerSyncTest {
 
     @Test
-    public void testSyncByExternalId(){
+    public void syncCompanyByExternalId(){
         String externalId = "12345";
 
         ExternalCustomer externalCustomer = createExternalCompany();
@@ -37,7 +37,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void testSyncPrivatePersonByExternalId(){
+    public void syncPrivatePersonByExternalId(){
         String externalId = "12345";
 
         ExternalCustomer externalCustomer = createExternalPrivatePerson();
@@ -63,7 +63,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void testSyncShoppingLists(){
+    public void syncShoppingLists(){
         String externalId = "12345";
 
         ExternalCustomer externalCustomer = createExternalCompany();
@@ -88,7 +88,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void testSyncNewCompanyCustomer(){
+    public void syncNewCompanyCustomer(){
 
         ExternalCustomer externalCustomer = createExternalCompany();
         externalCustomer.setExternalId("12345");
@@ -107,7 +107,7 @@ public class CustomerSyncTest {
     }
 
     @Test
-    public void testSyncNewPrivateCustomer(){
+    public void syncNewPrivateCustomer(){
 
         ExternalCustomer externalCustomer = createExternalPrivatePerson();
         externalCustomer.setExternalId("12345");
