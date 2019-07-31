@@ -22,7 +22,7 @@ All Customers {
         externalId='12345'
         masterExternalId='12345'
         companyNumber='470813-8895'
-        internalId='internalId0'
+        internalId='fake internalId'
         name='Acme Inc.'
         customerType=COMPANY
         preferredStore='null'

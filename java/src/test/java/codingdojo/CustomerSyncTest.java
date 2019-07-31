@@ -1,6 +1,7 @@
 package codingdojo;
 
 import org.approvaltests.Approvals;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -88,10 +89,9 @@ public class CustomerSyncTest {
 
     @Test
     public void testSyncNewCompanyCustomer(){
-        String externalId = "12345";
 
         ExternalCustomer externalCustomer = createExternalCompany();
-        externalCustomer.setExternalId(externalId);
+        externalCustomer.setExternalId("12345");
 
         FakeDatabase db = new FakeDatabase();
         CustomerSync sut = new CustomerSync(db);
@@ -104,6 +104,46 @@ public class CustomerSyncTest {
         assertTrue(created);
         printAfterState(db, toAssert);
         Approvals.verify(toAssert);
+    }
+
+    @Test
+    public void testSyncNewPrivateCustomer(){
+
+        ExternalCustomer externalCustomer = createExternalPrivatePerson();
+        externalCustomer.setExternalId("12345");
+
+        FakeDatabase db = new FakeDatabase();
+        CustomerSync sut = new CustomerSync(db);
+
+        StringBuilder toAssert = printBeforeState(externalCustomer, db);
+
+        // ACT
+        boolean created = sut.syncWithDataLayer(externalCustomer);
+
+        assertTrue(created);
+        printAfterState(db, toAssert);
+        Approvals.verify(toAssert);
+    }
+
+    @Test
+    public void conflictException() {
+        String externalId = "12345";
+
+        ExternalCustomer externalCustomer = createExternalCompany();
+        externalCustomer.setExternalId(externalId);
+
+        Customer customer = new Customer();
+        customer.setCustomerType(CustomerType.PERSON);
+        customer.setInternalId("45435");
+        customer.setExternalId(externalId);
+
+        FakeDatabase db = new FakeDatabase();
+        db.addCustomer(customer);
+        CustomerSync sut = new CustomerSync(db);
+
+        Assertions.assertThrows(ConflictException.class, () -> {
+            sut.syncWithDataLayer(externalCustomer);
+        });
     }
 
     private ExternalCustomer createExternalPrivatePerson() {

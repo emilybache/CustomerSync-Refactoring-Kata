@@ -6,7 +6,6 @@ import java.util.*;
  * Fake implementation of data layer that stores data in-memory
  */
 public class FakeDatabase implements CustomerDataLayer {
-    private static int counter = 0;
 
     private final HashMap<String, Customer> customersByExternalId = new HashMap<String, Customer>();
     private final HashMap<String, Customer> customersByMasterExternalId = new HashMap<String, Customer>();
@@ -37,8 +36,7 @@ public class FakeDatabase implements CustomerDataLayer {
 
     @Override
     public Customer createCustomerRecord(Customer customer) {
-        String internalId = "internalId" + counter;
-        counter++;
+        String internalId = "fake internalId";
         customer.setInternalId(internalId);
         addCustomer(customer);
         return customer;
