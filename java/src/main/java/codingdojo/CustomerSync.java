@@ -132,6 +132,7 @@ public class CustomerSync {
             Customer customer = customerMatches.getCustomer();
             customer.setExternalId(externalId);
             customer.setMasterExternalId(externalId);
+            customerMatches.addDuplicate(null);
         }
 
         return customerMatches;
