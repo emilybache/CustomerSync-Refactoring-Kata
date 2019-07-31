@@ -8,7 +8,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
-public class ExternalCustomerSyncTest {
+public class CustomerSyncTest {
 
     @Test
     public void testSyncByExternalId(){
