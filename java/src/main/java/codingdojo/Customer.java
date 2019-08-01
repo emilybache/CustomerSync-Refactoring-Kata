@@ -14,6 +14,7 @@ public class Customer {
     private String name;
     private CustomerType customerType;
     private String companyNumber;
+    private int bonusPoints;
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
@@ -107,5 +108,13 @@ public class Customer {
     @Override
     public int hashCode() {
         return Objects.hash(externalId, masterExternalId, companyNumber);
+    }
+
+    public int getBonusPoints() {
+        return bonusPoints;
+    }
+
+    public void setBonusPoints(int bonusPoints) {
+        this.bonusPoints = bonusPoints;
     }
 }
