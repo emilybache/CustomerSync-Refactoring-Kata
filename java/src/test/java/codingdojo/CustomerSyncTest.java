@@ -1,13 +1,12 @@
 package codingdojo;
 
-import org.approvaltests.Approvals;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -30,9 +29,19 @@ public class CustomerSyncTest {
         // ACT
         boolean created = sut.syncWithDataLayer(externalCustomer);
 
+        // ASSERT
         assertFalse(created);
-        verify(db, atLeastOnce()).updateCustomerRecord(any(Customer.class));
-
+        ArgumentCaptor<Customer> argument = ArgumentCaptor.forClass(Customer.class);
+        verify(db, atLeastOnce()).updateCustomerRecord(argument.capture());
+        Customer updatedCustomer = argument.getValue();
+        assertEquals(externalCustomer.getName(), updatedCustomer.getName());
+        assertEquals(externalCustomer.getExternalId(), updatedCustomer.getExternalId());
+        assertNull(updatedCustomer.getMasterExternalId());
+        assertEquals(externalCustomer.getCompanyNumber(), updatedCustomer.getCompanyNumber());
+        assertEquals(externalCustomer.getPostalAddress(), updatedCustomer.getAddress());
+        assertEquals(externalCustomer.getShoppingLists(), updatedCustomer.getShoppingLists());
+        assertEquals(CustomerType.COMPANY, updatedCustomer.getCustomerType());
+        assertNull(updatedCustomer.getPreferredStore());
     }
 
 
