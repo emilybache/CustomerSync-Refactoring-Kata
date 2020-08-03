@@ -7,3 +7,4 @@ python/venv
 .vs
 CSharp/bin
 CSharp/obj
+.DS_Store
