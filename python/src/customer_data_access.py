@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from model_objects import Customer, ShoppingList
+from model_objects import Customer, ShoppingList, CustomerType
 
 
 @dataclass
@@ -18,8 +18,8 @@ class CustomerMatches:
 
 
 class CustomerDataAccess:
-    def __init__(self, customerDataLayer):
-        self.customerDataLayer = customerDataLayer
+    def __init__(self, db):
+        self.customerDataLayer = CustomerDataLayer(db)
 
     def loadCompanyCustomer(self, externalId, companyNumber):
         matches = CustomerMatches()
@@ -56,3 +56,42 @@ class CustomerDataAccess:
         customer.addShoppingList(shoppingList)
         self.customerDataLayer.updateShoppingList(shoppingList)
         self.customerDataLayer.updateCustomerRecord(customer)
+
+
+class CustomerDataLayer:
+    def __init__(self, conn):
+        self.conn = conn
+        self.cursor = self.conn.cursor()
+
+    def findByExternalId(self, externalId):
+        self.cursor.execute('SELECT * FROM customers WHERE externalId=?', (externalId,))
+        return self._customer_from_sql_select_fields(self.cursor.fetchone())
+
+    def _customer_from_sql_select_fields(self, fields):
+        if not fields:
+            return None
+        return Customer(internalId=fields[0], externalId=fields[1], masterExternalId=fields[2], name=fields[3],
+                        customerType=CustomerType(fields[4]), companyNumber=fields[5])
+
+    def findByMasterExternalId(self, masterExternalId):
+        self.cursor.execute('SELECT * FROM customers WHERE masterExternalId=?', (masterExternalId,))
+        return self._customer_from_sql_select_fields(self.cursor.fetchone())
+
+    def findByCompanyNumber(self, companyNumber):
+        self.cursor.execute('SELECT * FROM customers WHERE companyNumber=?', (companyNumber,))
+        return self._customer_from_sql_select_fields(self.cursor.fetchone())
+
+    def createCustomerRecord(self, customer):
+        customer.internalId = "213123"
+        self.cursor.execute('INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?);', (customer.internalId, customer.externalId, customer.masterExternalId, customer.name, customer.customerType.value, customer.companyNumber))
+        self.conn.commit()
+        return customer
+
+    def updateCustomerRecord(self, customer):
+        self.cursor.execute('Update customers set externalId=?, masterExternalId=?, name=?, customerType=?, companyNumber=? WHERE internalId=?',
+                            (customer.externalId, customer.masterExternalId, customer.name, customer.customerType.value, customer.companyNumber, customer.internalId))
+        self.conn.commit()
+
+    def updateShoppingList(self, shoppingList):
+        pass
+

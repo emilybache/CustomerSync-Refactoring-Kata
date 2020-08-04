@@ -1,0 +1,20 @@
+{
+    "externalId": "12345",
+    "name": "Acme Inc.",
+    "isCompany": true,
+    "companyNumber": "470813-8895",
+    "preferredStore": "",
+    "postalAddress": {
+        "street": "123 main st",
+        "city": "Helsingborg",
+        "postalCode": "SE-123 45"
+    },
+    "shoppingLists": [
+        {
+            "products": [
+                "lipstick",
+                "blusher"
+            ]
+        }
+    ]
+}

@@ -2,6 +2,7 @@ from customer_data_access import CustomerDataAccess
 from customer_sync import CustomerSync
 from model_objects import ExternalCustomer, Address, ShoppingList, Customer, CustomerType
 
+import sqlite3
 
 class FakeDatabase:
     def __init__(self, customer):
@@ -19,19 +20,29 @@ class FakeDatabase:
         pass
 
 def main():
-    externalId = "12345"
-    externalRecord = ExternalCustomer(externalId=externalId,
-                                      name="Acme Inc.",
-                                      isCompany=True,
-                                      companyNumber="470813-8895",
-                                      preferredStore="Nordstan",
-                                      postalAddress=Address("123 main st", "Helsingborg", "SE-123 45"),
-                                      shoppingLists=[ShoppingList(products=["lipstick", "blusher"])]
-                                      )
-    customer = Customer(customerType=CustomerType.COMPANY, companyNumber="32423-342", internalId="45435", externalId=externalId)
+    with open("incoming.json", "r") as f:
+        externalRecord = ExternalCustomer.from_json(f.read())
 
-    fakeDb = FakeDatabase(customer)
-    customerSync = CustomerSync(CustomerDataAccess(fakeDb))
+    conn = sqlite3.connect("legacy.db")
+    db = conn.cursor()
+    with open("database.sql", "r") as f:
+        db.execute("""CREATE TABLE IF NOT EXISTS customers (
+    internalId        VARCHAR(10),
+    externalId        VARCHAR(10),
+    masterExternalId        VARCHAR(10),
+    name        VARCHAR(100),
+    customerType INT,
+    companyNumber VARCHAR(12),
+    PRIMARY KEY (internalId)
+);""")
+        db.execute("DELETE FROM customers;")
+        db.execute("INSERT INTO customers VALUES ('45435', '12345', NULL, NULL, 2, '32423-342');")
+        conn.commit()
+    #externalId = "12345"
+    #customer = Customer(customerType=CustomerType.COMPANY, companyNumber="32423-342", internalId="45435", externalId=externalId)
+
+    #fakeDb = FakeDatabase(customer)
+    customerSync = CustomerSync(CustomerDataAccess(conn))
     customerSync.syncWithDataLayer(externalRecord)
 
 if __name__ == "__main__":
