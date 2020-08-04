@@ -90,6 +90,13 @@ class CustomerDataLayer:
             (street, city, postalCode) = self.cursor.fetchone()
             address = Address(street, city, postalCode)
             customer.address = address
+        self.cursor.execute('SELECT shoppinglistId FROM customer_shoppinglists WHERE customerId=?', (customer.internalId,))
+        shoppinglists = self.cursor.fetchall()
+        for sl in shoppinglists:
+            self.cursor.execute('SELECT products FROM shoppinglists WHERE shoppinglistId=?', (sl,))
+            products_as_str = self.cursor.fetchone()
+            products = products_as_str.split(", ")
+            customer.addShoppingList(ShoppingList(products))
         return customer
 
     def findByMasterExternalId(self, masterExternalId):
@@ -114,6 +121,16 @@ class CustomerDataLayer:
             self.cursor.execute('INSERT INTO addresses VALUES (?, ?, ?, ?)', (
                 addressId, customer.address.street, customer.address.city, customer.address.postalCode))
             self.cursor.execute('UPDATE customers set addressId=? WHERE internalId=?', (addressId, customer.internalId))
+
+        if customer.shoppingLists:
+            for sl in customer.shoppingLists:
+                data = ", ".join(sl)
+                self.cursor.execute('SELECT shoppinglistId FROM shoppinglists WHERE products=?', (data,))
+                shoppinglistId = self.cursor.fetchone()
+                if not shoppinglistId:
+                    shoppinglistId = self._nextid("shoppinglists")
+                    self.cursor.execute('INSERT INTO shoppinglists VALUES (?, ?)', (shoppinglistId, data))
+                self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)', (customer.internalId, shoppinglistId))
         self.conn.commit()
         return customer
 
@@ -137,6 +154,16 @@ class CustomerDataLayer:
             self.cursor.execute('INSERT INTO addresses VALUES (?, ?, ?, ?)', (
             addressId, customer.address.street, customer.address.city, customer.address.postalCode))
 
+        self.cursor.execute('DELETE FROM customer_shoppinglists WHERE customerId=?', (customer.internalId,))
+        if customer.shoppingLists:
+            for sl in customer.shoppingLists:
+                products = ", ".join(sl.products)
+                self.cursor.execute('SELECT shoppinglistId FROM shoppinglists WHERE products=?', (products,))
+                shoppinglistId = self.cursor.fetchone()
+                if not shoppinglistId:
+                    shoppinglistId = self._nextid("shoppinglists")
+                    self.cursor.execute('INSERT INTO shoppinglists VALUES (?, ?)', (shoppinglistId, products))
+                self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)', (customer.internalId, shoppinglistId))
         self.conn.commit()
 
     def updateShoppingList(self, shoppingList):
