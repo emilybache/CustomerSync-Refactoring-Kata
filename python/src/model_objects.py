@@ -44,6 +44,7 @@ class Customer:
         self.customerType = customerType
         self.companyNumber = companyNumber
         self.shoppingLists = []
+        self.address = None
 
     def addShoppingList(self, shoppingList):
         self.shoppingLists.append(shoppingList)

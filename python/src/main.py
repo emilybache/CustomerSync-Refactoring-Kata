@@ -25,25 +25,43 @@ def main():
 
     conn = sqlite3.connect("legacy.db")
     db = conn.cursor()
-    with open("database.sql", "r") as f:
-        db.execute("""CREATE TABLE IF NOT EXISTS customers (
-    internalId        VARCHAR(10),
+    db.execute('DROP TABLE customers;')
+    db.execute("""CREATE TABLE IF NOT EXISTS customers (
+    internalId        INT,
     externalId        VARCHAR(10),
     masterExternalId        VARCHAR(10),
     name        VARCHAR(100),
     customerType INT,
     companyNumber VARCHAR(12),
-    PRIMARY KEY (internalId)
+    addressId INT,
+    PRIMARY KEY (internalId),
+    FOREIGN KEY (addressId) REFERENCES addresses(addressId)
 );""")
-        db.execute("DELETE FROM customers;")
-        db.execute("INSERT INTO customers VALUES ('45435', '12345', NULL, NULL, 2, '32423-342');")
-        conn.commit()
-    #externalId = "12345"
-    #customer = Customer(customerType=CustomerType.COMPANY, companyNumber="32423-342", internalId="45435", externalId=externalId)
+    db.execute("""CREATE TABLE IF NOT EXISTS addresses (
+        addressId        VARCHAR(10),
+        street VARCHAR(100),
+        city   VARCHAR(100),
+        postalCode VARCHAR(10),
+        PRIMARY KEY (addressId)
+    );""")
+    db.execute("DELETE FROM customers;")
+    db.execute("INSERT INTO customers VALUES ('45435', '12345', NULL, NULL, 2, '32423-342', NULL);")
+    db.execute("DELETE FROM addresses")
+    conn.commit()
 
-    #fakeDb = FakeDatabase(customer)
     customerSync = CustomerSync(CustomerDataAccess(conn))
     customerSync.syncWithDataLayer(externalRecord)
+
+    db.execute('SELECT * FROM customers')
+    customers = db.fetchall()
+    print("customers:")
+    for c in customers:
+        print(c)
+    print("addresses:")
+    db.execute('SELECT * FROM addresses')
+    addresses = db.fetchall()
+    for a in addresses:
+        print(a)
 
 if __name__ == "__main__":
     main()
