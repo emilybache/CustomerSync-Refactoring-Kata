@@ -1,0 +1,32 @@
+ROW:0
+   addressId: None
+   companyNumber: 32423-3425
+   customerType: 2
+   externalId: 12345
+   internalId: 45435
+   masterExternalId: None
+   name: Acme Inc.
+ROW:1
+   addressId: None
+   companyNumber: 32423-3426
+   customerType: 2
+   externalId: 12346
+   internalId: 45436
+   masterExternalId: None
+   name: None
+ROW:2
+   addressId: None
+   companyNumber: 470813-8895
+   customerType: 2
+   externalId: 12345
+   internalId: 213123
+   masterExternalId: 12345
+   name: Acme Inc.
+ROW:3
+   addressId: None
+   companyNumber: 470813-8895
+   customerType: 2
+   externalId: 12345
+   internalId: 4
+   masterExternalId: 12345
+   name: Acme Inc.

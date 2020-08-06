@@ -93,9 +93,9 @@ class CustomerDataLayer:
         self.cursor.execute('SELECT shoppinglistId FROM customer_shoppinglists WHERE customerId=?', (customer.internalId,))
         shoppinglists = self.cursor.fetchall()
         for sl in shoppinglists:
-            self.cursor.execute('SELECT products FROM shoppinglists WHERE shoppinglistId=?', (sl,))
+            self.cursor.execute('SELECT products FROM shoppinglists WHERE shoppinglistId=?', (sl[0],))
             products_as_str = self.cursor.fetchone()
-            products = products_as_str.split(", ")
+            products = products_as_str[0].split(", ")
             customer.addShoppingList(ShoppingList(products))
         return customer
 
@@ -112,7 +112,7 @@ class CustomerDataLayer:
         return self._customer_from_sql_select_fields(self.cursor.fetchone())
 
     def createCustomerRecord(self, customer):
-        customer.internalId = "213123"
+        customer.internalId = self._nextid("customers")
         self.cursor.execute('INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?);', (
         customer.internalId, customer.externalId, customer.masterExternalId, customer.name, customer.customerType.value,
         customer.companyNumber, None))
@@ -159,7 +159,7 @@ class CustomerDataLayer:
             for sl in customer.shoppingLists:
                 products = ", ".join(sl.products)
                 self.cursor.execute('SELECT shoppinglistId FROM shoppinglists WHERE products=?', (products,))
-                shoppinglistId = self.cursor.fetchone()
+                (shoppinglistId,) = self.cursor.fetchone()
                 if not shoppinglistId:
                     shoppinglistId = self._nextid("shoppinglists")
                     self.cursor.execute('INSERT INTO shoppinglists VALUES (?, ?)', (shoppinglistId, products))

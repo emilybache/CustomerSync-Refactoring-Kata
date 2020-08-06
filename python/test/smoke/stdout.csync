@@ -1,0 +1,6 @@
+insert statement: INSERT INTO "customers" ("addressId", "companyNumber", "customerType", "externalId", "internalId", "masterExternalId", "name") VALUES (?,?,?,?,?,?,?)
+insert statement: INSERT INTO "customers" ("addressId", "companyNumber", "customerType", "externalId", "internalId", "masterExternalId", "name") VALUES (?,?,?,?,?,?,?)
+insert statement: INSERT INTO "customers" ("addressId", "companyNumber", "customerType", "externalId", "internalId", "masterExternalId", "name") VALUES (?,?,?,?,?,?,?)
+insert statement: INSERT INTO "addresses" ("addressId", "city", "postalCode", "street") VALUES (?,?,?,?)
+insert statement: INSERT INTO "shoppinglists" ("products", "shoppinglistId") VALUES (?,?)
+insert statement: INSERT INTO "customer_shoppinglists" ("customerId", "shoppinglistId") VALUES (?,?)

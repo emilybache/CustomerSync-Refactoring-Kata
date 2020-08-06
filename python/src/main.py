@@ -25,8 +25,9 @@ def main():
 
     conn = sqlite3.connect("legacy.db")
     db = conn.cursor()
-    db.execute('DROP TABLE IF EXISTS customers;')
-    db.execute("""CREATE TABLE IF NOT EXISTS customers (
+    db.executescript("""\
+DROP TABLE IF EXISTS customers;
+CREATE TABLE IF NOT EXISTS customers (
     internalId        INT,
     externalId        VARCHAR(10),
     masterExternalId        VARCHAR(10),
@@ -36,37 +37,52 @@ def main():
     addressId INT,
     PRIMARY KEY (internalId),
     FOREIGN KEY (addressId) REFERENCES addresses(addressId)
-);""")
-    db.execute("""DROP TABLE IF EXISTS addresses;""")
-    db.execute("""CREATE TABLE IF NOT EXISTS addresses (
+);
+DROP TABLE IF EXISTS addresses;
+CREATE TABLE IF NOT EXISTS addresses (
         addressId        INT,
         street VARCHAR(100),
         city   VARCHAR(100),
         postalCode VARCHAR(10),
         PRIMARY KEY (addressId)
-    );""")
-    db.execute('DROP TABLE IF EXISTS shoppinglists')
-    db.execute("""CREATE TABLE IF NOT EXISTS shoppinglists (
+    );
+DROP TABLE IF EXISTS shoppinglists;
+CREATE TABLE IF NOT EXISTS shoppinglists (
         shoppinglistId INT,
         products  VARCHAR(500),
         PRIMARY KEY (shoppinglistId)
-    );""")
-    db.execute('DROP TABLE IF EXISTS customer_shoppinglists')
-    db.execute("""CREATE TABLE IF NOT EXISTS customer_shoppinglists (
+    );
+DROP TABLE IF EXISTS customer_shoppinglists;
+CREATE TABLE IF NOT EXISTS customer_shoppinglists (
         customerId INT,
         shoppinglistId INT,
         FOREIGN KEY (customerId) REFERENCES customers(internalId),
         FOREIGN KEY (shoppinglistId) REFERENCES shoppinglists(shoppinglistId)
-    );""")
+    );
+    """)
 
     db.execute("DELETE FROM customers;")
-    db.execute("INSERT INTO customers VALUES ('45435', '12345', NULL, NULL, 2, '32423-342', NULL);")
+    db.execute("INSERT INTO customers VALUES ('45435', '12345', NULL, NULL, 2, '32423-3425', NULL);")
+    db.execute("INSERT INTO customers VALUES ('45436', '12346', NULL, NULL, 2, '32423-3426', NULL);")
+
     db.execute("DELETE FROM addresses")
     conn.commit()
 
-    customerSync = CustomerSync(CustomerDataAccess(conn))
+    conn.cursor().execute("SELECT * FROM sqlite_temp_master")
+    tables = [name[0] for name in conn.cursor().fetchall()]
+    print(f"found conn tables: {tables}")
+    conn.close()
+
+    conn2 = sqlite3.connect("legacy.db")
+
+    customerSync = CustomerSync(CustomerDataAccess(conn2))
     customerSync.syncWithDataLayer(externalRecord)
 
+    conn2.cursor().execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = [name for name in conn2.cursor().fetchall()]
+    print(f"found conn2 tables: {tables}")
+
+    db = conn2.cursor()
     dump_table(db, "customers")
     dump_table(db, "addresses")
     dump_table(db, "customer_shoppinglists")

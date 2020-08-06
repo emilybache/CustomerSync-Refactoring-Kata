@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS customers (
+CREATE TABLE customers (
     internalId        INT,
     externalId        VARCHAR(10),
     masterExternalId        VARCHAR(10),
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS customers (
     FOREIGN KEY (addressId) REFERENCES addresses(addressId)
 );
 
-CREATE TABLE IF NOT EXISTS addresses (
+CREATE TABLE addresses (
         addressId        INT,
         street VARCHAR(100),
         city   VARCHAR(100),
@@ -19,13 +19,13 @@ CREATE TABLE IF NOT EXISTS addresses (
         PRIMARY KEY (addressId)
 );
 
-CREATE TABLE IF NOT EXISTS shoppinglists (
+CREATE TABLE shoppinglists (
         shoppinglistId INT,
         products  VARCHAR(500),
         PRIMARY KEY (shoppinglistId)
 );
 
-CREATE TABLE IF NOT EXISTS customer_shoppinglists (
+CREATE TABLE customer_shoppinglists (
         customerId INT,
         shoppinglistId INT,
         FOREIGN KEY (customerId) REFERENCES customers(internalId),
