@@ -3,8 +3,3 @@ ROW:0
    city: Helsingborg
    postalCode: SE-123 45
    street: 123 main st
-ROW:1
-   addressId: 2
-   city: Helsingborg
-   postalCode: SE-123 45
-   street: 123 main st

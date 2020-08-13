@@ -4,11 +4,11 @@ from typing import List
 from model_objects import Customer, ShoppingList, CustomerType, Address
 
 
-@dataclass
 class CustomerMatches:
-    match_term: str = None
-    customer: Customer = None
-    duplicates: List[Customer] = field(default_factory=list)
+    def __init__(self):
+        self.matchTerm = None
+        self.customer = None
+        self.duplicates = []
 
     def has_duplicates(self):
         return self.duplicates
@@ -87,9 +87,11 @@ class CustomerDataLayer:
         if addressId:
             self.cursor.execute('SELECT street, city, postalCode FROM addresses WHERE addressId=?',
                                           (addressId, ))
-            (street, city, postalCode) = self.cursor.fetchone()
-            address = Address(street, city, postalCode)
-            customer.address = address
+            addresses = self.cursor.fetchone()
+            if addresses:
+                (street, city, postalCode) = addresses
+                address = Address(street, city, postalCode)
+                customer.address = address
         self.cursor.execute('SELECT shoppinglistId FROM customer_shoppinglists WHERE customerId=?', (customer.internalId,))
         shoppinglists = self.cursor.fetchall()
         for sl in shoppinglists:

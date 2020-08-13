@@ -1,0 +1,1 @@
+ConflictException: Existing customer for externalCustomer 12345 doesn't match external id 45646 instead found 666

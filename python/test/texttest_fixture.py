@@ -3,7 +3,7 @@ import dbtext, os
 import sqlite3
 
 from customer_data_access import CustomerDataAccess
-from customer_sync import CustomerSync
+from customer_sync import CustomerSync, ConflictException
 from model_objects import ExternalCustomer
 
 
@@ -19,7 +19,11 @@ def main():
 
         conn = sqlite3.connect(f"{testdbname}.db")
         customerSync = CustomerSync(CustomerDataAccess(conn))
-        customerSync.syncWithDataLayer(externalRecord)
+
+        try:
+            customerSync.syncWithDataLayer(externalRecord)
+        except ConflictException as e:
+            print(f"ConflictException: {e}")
 
         # Assert
         db.dumptables("csync", "*", usemaxcol="")

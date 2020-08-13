@@ -1,0 +1,20 @@
+{
+    "externalId": "12345",
+    "name": "Joe Bloggs",
+    "isCompany": false,
+    "companyNumber": null,
+    "preferredStore": "Nordstan",
+    "postalAddress": {
+        "street": "123 main st",
+        "city": "Stockholm",
+        "postalCode": "SE-123 45"
+    },
+    "shoppingLists": [
+        {
+            "products": [
+                "lipstick",
+                "foundation"
+            ]
+        }
+    ]
+}

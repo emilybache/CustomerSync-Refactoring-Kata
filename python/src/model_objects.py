@@ -28,7 +28,7 @@ class ExternalCustomer:
     externalId: str
     name: str
     isCompany: bool
-    companyNumber: str
+    companyNumber: Optional[str]
     preferredStore: str
     postalAddress: Address
     shoppingLists: List[ShoppingList] = field(default_factory=list)

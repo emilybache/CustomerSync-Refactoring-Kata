@@ -1,0 +1,1 @@
+ConflictException: Existing customer for externalCustomer {externalId} already exists and is not a company

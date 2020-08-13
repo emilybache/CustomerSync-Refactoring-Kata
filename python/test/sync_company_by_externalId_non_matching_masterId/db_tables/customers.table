@@ -1,0 +1,16 @@
+ROW:0
+   addressId: None
+   companyNumber: 470813-8895
+   customerType: 2
+   externalId: 12345
+   internalId: 45435
+   masterExternalId: None
+   name: Company 1
+ROW:1
+   addressId: None
+   companyNumber: 470813-8895
+   customerType: 2
+   externalId: None
+   internalId: 45435234
+   masterExternalId: 12345
+   name: Company 2
