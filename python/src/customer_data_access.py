@@ -86,7 +86,7 @@ class CustomerDataLayer:
         addressId = self._find_addressId(customer)
         if addressId:
             self.cursor.execute('SELECT street, city, postalCode FROM addresses WHERE addressId=?',
-                                          (addressId))
+                                          (addressId, ))
             (street, city, postalCode) = self.cursor.fetchone()
             address = Address(street, city, postalCode)
             customer.address = address
@@ -146,24 +146,29 @@ class CustomerDataLayer:
         self.cursor.execute(
             'Update customers set externalId=?, masterExternalId=?, name=?, customerType=?, companyNumber=? WHERE internalId=?',
             (customer.externalId, customer.masterExternalId, customer.name, customer.customerType.value,
-             customer.companyNumber, customer.internalId))
+                customer.companyNumber, customer.internalId))
         if customer.address:
             addressId = self._find_addressId(customer)
             if not addressId:
                 addressId = self._nextid("addresses")
-            self.cursor.execute('INSERT INTO addresses VALUES (?, ?, ?, ?)', (
-            addressId, customer.address.street, customer.address.city, customer.address.postalCode))
+                self.cursor.execute('INSERT INTO addresses VALUES (?, ?, ?, ?)', (addressId, customer.address.street, customer.address.city, customer.address.postalCode))
+                self.cursor.execute('UPDATE customers set addressId=? WHERE internalId=?', (addressId, customer.internalId))
 
         self.cursor.execute('DELETE FROM customer_shoppinglists WHERE customerId=?', (customer.internalId,))
         if customer.shoppingLists:
             for sl in customer.shoppingLists:
                 products = ", ".join(sl.products)
                 self.cursor.execute('SELECT shoppinglistId FROM shoppinglists WHERE products=?', (products,))
-                (shoppinglistId,) = self.cursor.fetchone()
-                if not shoppinglistId:
+                shoppinglistIds = self.cursor.fetchone()
+                if shoppinglistIds is not None:
+                    (shoppinglistId,) = shoppinglistIds
+                    self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)',
+                                        (customer.internalId, shoppinglistId))
+                else:
                     shoppinglistId = self._nextid("shoppinglists")
                     self.cursor.execute('INSERT INTO shoppinglists VALUES (?, ?)', (shoppinglistId, products))
-                self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)', (customer.internalId, shoppinglistId))
+                    self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)', (customer.internalId, shoppinglistId))
+
         self.conn.commit()
 
     def updateShoppingList(self, shoppingList):

@@ -22,11 +22,3 @@ ROW:2
    internalId: 213123
    masterExternalId: 12345
    name: Acme Inc.
-ROW:3
-   addressId: 2
-   companyNumber: 470813-8895
-   customerType: 2
-   externalId: 12345
-   internalId: 4
-   masterExternalId: 12345
-   name: Acme Inc.
