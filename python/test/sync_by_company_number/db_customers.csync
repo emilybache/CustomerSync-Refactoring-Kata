@@ -1,0 +1,8 @@
+ROW:0
+   addressId: 1
+   companyNumber: 12345
+   customerType: 2
+   externalId: 12345
+   internalId: 45435
+   masterExternalId: None
+   name: Acme Inc.
