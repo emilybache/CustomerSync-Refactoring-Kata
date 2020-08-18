@@ -15,6 +15,7 @@ def coverage_main():
     cov.stop()
     cov.save()
 
+    cov.html_report(directory=os.path.join(os.environ["TEXTTEST_HOME"], "test", "htmlcov"))
 
 if __name__ == '__main__':
     coverage_main()
