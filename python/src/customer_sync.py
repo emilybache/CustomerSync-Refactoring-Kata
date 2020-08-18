@@ -15,7 +15,6 @@ class CustomerSync:
     def __init__(self, customerDataAccess):
         self.customerDataAccess = customerDataAccess
 
-
     def syncWithDataLayer(self, externalCustomer):
         customerMatches: CustomerMatches
         if externalCustomer.isCompany:

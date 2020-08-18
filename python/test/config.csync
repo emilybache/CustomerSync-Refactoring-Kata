@@ -1,6 +1,6 @@
 # Full path to the System Under Test (or Java Main Class name)
 executable:${TEXTTEST_HOME}/test/texttest_fixture.py
-interpreter:coverage run
+interpreter:python3
 
 
 # Naming scheme to use for files for stdin,stdout and stderr
@@ -12,3 +12,5 @@ full_name:Customer Sync
 copy_test_path:incoming.json
 copy_test_path:empty_db.sql
 copy_test_path:db_tables
+
+
