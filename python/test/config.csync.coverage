@@ -1,4 +1,6 @@
 executable:${TEXTTEST_HOME}/test/texttest_coverage_fixture.py
 
+[run_dependent_text]
+stderr:coverage will be written to
 
 
