@@ -1,5 +1,7 @@
 executable:${TEXTTEST_HOME}/test/texttest_coverage_fixture.py
 
+config_module:default
+
 [run_dependent_text]
 stderr:coverage will be written to
 
