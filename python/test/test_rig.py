@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import dbtext, os
 
 import sqlite3
@@ -9,7 +11,9 @@ from model_objects import ExternalCustomer
 
 def main():
     testdbname = "ttdb_" + str(os.getpid())  # some temporary name not to clash with other tests
-    with dbtext.Sqlite3_DBText(testdbname) as db:
+
+    # Switch dbtext.MSSQL_DBText for dbtext.Sqlite3_DBText or dbtext.MySQL_DBText as you prefer
+    with dbtext.MSSQL_DBText(testdbname) as db:
         # Arrange
         db.create(sqlfile="empty_db.sql")
 
@@ -17,7 +21,7 @@ def main():
         with open("incoming.json", "r") as f:
             externalRecord = ExternalCustomer.from_json(f.read())
 
-        conn = sqlite3.connect(f"{testdbname}.db")
+        conn = db.make_connection(testdbname)
         customerSync = CustomerSync(CustomerDataAccess(conn))
 
         try:
@@ -26,7 +30,7 @@ def main():
             print(f"ConflictException: {e}")
 
         # Assert
-        db.dumptables("csync", "*", usemaxcol="")
+        db.dumptables("csync", "*", exclude="trace*", usemaxcol="")
 
 if __name__ == "__main__":
     main()

@@ -1,16 +1,4 @@
 
-CREATE TABLE customers (
-    internalId        INT,
-    externalId        VARCHAR(10),
-    masterExternalId        VARCHAR(10),
-    name        VARCHAR(100),
-    customerType INT,
-    companyNumber VARCHAR(12),
-    addressId INT,
-    PRIMARY KEY (internalId),
-    FOREIGN KEY (addressId) REFERENCES addresses(addressId)
-);
-
 CREATE TABLE addresses (
         addressId        INT,
         street VARCHAR(100),
@@ -23,6 +11,18 @@ CREATE TABLE shoppinglists (
         shoppinglistId INT,
         products  VARCHAR(500),
         PRIMARY KEY (shoppinglistId)
+);
+
+CREATE TABLE customers (
+    internalId        INT,
+    externalId        VARCHAR(10),
+    masterExternalId        VARCHAR(10),
+    name        VARCHAR(100),
+    customerType INT,
+    companyNumber VARCHAR(12),
+    addressId INT,
+    PRIMARY KEY (internalId),
+    FOREIGN KEY (addressId) REFERENCES addresses(addressId)
 );
 
 CREATE TABLE customer_shoppinglists (

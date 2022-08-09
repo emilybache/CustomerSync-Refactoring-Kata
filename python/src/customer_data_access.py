@@ -114,12 +114,12 @@ class CustomerDataLayer:
         return self._customer_from_sql_select_fields(self.cursor.fetchone())
 
     def createCustomerRecord(self, customer):
-        customer.internalId = self._nextid("customers")
+        customer.internalId = self._nextid("customers", "internalId")
         self.cursor.execute('INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?);', (
         customer.internalId, customer.externalId, customer.masterExternalId, customer.name, customer.customerType.value,
         customer.companyNumber, None))
         if customer.address:
-            addressId = self._nextid("addresses")
+            addressId = self._nextid("addresses", "addressId")
             self.cursor.execute('INSERT INTO addresses VALUES (?, ?, ?, ?)', (
                 addressId, customer.address.street, customer.address.city, customer.address.postalCode))
             self.cursor.execute('UPDATE customers set addressId=? WHERE internalId=?', (addressId, customer.internalId))
@@ -130,14 +130,14 @@ class CustomerDataLayer:
                 self.cursor.execute('SELECT shoppinglistId FROM shoppinglists WHERE products=?', (data,))
                 shoppinglistId = self.cursor.fetchone()
                 if not shoppinglistId:
-                    shoppinglistId = self._nextid("shoppinglists")
+                    shoppinglistId = self._nextid("shoppinglists", "shoppinglistId")
                     self.cursor.execute('INSERT INTO shoppinglists VALUES (?, ?)', (shoppinglistId, data))
                 self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)', (customer.internalId, shoppinglistId))
         self.conn.commit()
         return customer
 
-    def _nextid(self, tablename):
-        self.cursor.execute(f'SELECT MAX(ROWID) AS max_id FROM {tablename};')
+    def _nextid(self, tablename, id_column):
+        self.cursor.execute(f'SELECT MAX({id_column}) AS max_id FROM {tablename};')
         (id,) = self.cursor.fetchone()
         if id:
             return int(id) + 1
@@ -152,7 +152,7 @@ class CustomerDataLayer:
         if customer.address:
             addressId = self._find_addressId(customer)
             if not addressId:
-                addressId = self._nextid("addresses")
+                addressId = self._nextid("addresses", "addressId")
                 self.cursor.execute('INSERT INTO addresses VALUES (?, ?, ?, ?)', (addressId, customer.address.street, customer.address.city, customer.address.postalCode))
                 self.cursor.execute('UPDATE customers set addressId=? WHERE internalId=?', (addressId, customer.internalId))
 
@@ -167,7 +167,7 @@ class CustomerDataLayer:
                     self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)',
                                         (customer.internalId, shoppinglistId))
                 else:
-                    shoppinglistId = self._nextid("shoppinglists")
+                    shoppinglistId = self._nextid("shoppinglists", "shoppinglistId")
                     self.cursor.execute('INSERT INTO shoppinglists VALUES (?, ?)', (shoppinglistId, products))
                     self.cursor.execute('INSERT INTO customer_shoppinglists VALUES (?, ?)', (customer.internalId, shoppinglistId))
 
