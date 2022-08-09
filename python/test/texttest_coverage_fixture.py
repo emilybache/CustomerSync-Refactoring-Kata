@@ -1,6 +1,6 @@
 
 import sys, os
-from texttest_fixture import main
+from test_rig import main
 import coverage
 
 

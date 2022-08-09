@@ -22,7 +22,7 @@ You will also need to install pyodbc and other python dependencies:
 In the 'test' subfolder there is a setup for testing this code using [TextTest](http://texttest.org) and 
 [dbtext](https://github.com/texttest/dbtext).
 
-The file 'test/texttest_fixture.py' is the test harness script that is called by TextTest. It uses dbtext to create a
+The file 'test/test_rig.py' is the test harness script that is called by TextTest. It uses dbtext to create a
 database filled with data specified in your test via text files. (It uses sqlite3 as the database engine). 
 Then it calls the system under test with an incoming
 record parsed from json. At the end dbtext writes the entire contents of the database into text files that will be collected by
