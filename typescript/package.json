@@ -1,0 +1,27 @@
+{
+  "name": "CustomerSync-Refactoring-Kata",
+  "version": "1.0.0",
+  "description": "Customer Sync Refactoring Kata in Typescript",
+  "license": "MIT",
+  "scripts": {
+    "test:mocha": "nyc mocha",
+    "nyc:report": "nyc report --reporter html"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.14.3",
+    "@types/sinon": "^10.0.13",
+    "@types/sinon-chai": "^3.2.9",
+    "approvals": "^6.0.0",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "sinon": "^15.0.1",
+    "sinon-chai": "^3.7.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^3.14.2",
+    "typescript": "^4.9.5"
+  }
+}
