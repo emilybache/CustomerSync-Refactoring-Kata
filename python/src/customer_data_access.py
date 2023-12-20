@@ -19,19 +19,19 @@ class CustomerMatches:
 
 class CustomerDataAccess:
     def __init__(self, db):
-        self.customerDataLayer = CustomerDataLayer(db)
+        self.customerRepository = CustomerDataLayer(db)
 
     def loadCompanyCustomer(self, externalId, companyNumber):
         matches = CustomerMatches()
-        matchByExternalId: Customer = self.customerDataLayer.findByExternalId(externalId)
+        matchByExternalId: Customer = self.customerRepository.findByExternalId(externalId)
         if matchByExternalId is not None:
             matches.customer = matchByExternalId
             matches.matchTerm = "ExternalId"
-            matchByMasterId: Customer = self.customerDataLayer.findByMasterExternalId(externalId)
+            matchByMasterId: Customer = self.customerRepository.findByMasterExternalId(externalId)
             if matchByMasterId is not None:
                 matches.add_duplicate(matchByMasterId)
         else:
-            matchByCompanyNumber: Customer = self.customerDataLayer.findByCompanyNumber(companyNumber)
+            matchByCompanyNumber: Customer = self.customerRepository.findByCompanyNumber(companyNumber)
             if matchByCompanyNumber is not None:
                 matches.customer = matchByCompanyNumber
                 matches.matchTerm = "CompanyNumber"
@@ -40,22 +40,22 @@ class CustomerDataAccess:
 
     def loadPersonCustomer(self, externalId):
         matches = CustomerMatches()
-        matchByPersonalNumber: Customer = self.customerDataLayer.findByExternalId(externalId)
+        matchByPersonalNumber: Customer = self.customerRepository.findByExternalId(externalId)
         matches.customer = matchByPersonalNumber
         if matchByPersonalNumber is not None:
             matches.matchTerm = "ExternalId"
         return matches
 
     def updateCustomerRecord(self, customer):
-        self.customerDataLayer.updateCustomerRecord(customer)
+        self.customerRepository.updateCustomerRecord(customer)
 
     def createCustomerRecord(self, customer):
-        return self.customerDataLayer.createCustomerRecord(customer)
+        return self.customerRepository.createCustomerRecord(customer)
 
     def updateShoppingList(self, customer: Customer, shoppingList: ShoppingList):
         customer.addShoppingList(shoppingList)
-        self.customerDataLayer.updateShoppingList(shoppingList)
-        self.customerDataLayer.updateCustomerRecord(customer)
+        self.customerRepository.updateShoppingList(shoppingList)
+        self.customerRepository.updateCustomerRecord(customer)
 
 
 class CustomerDataLayer:
