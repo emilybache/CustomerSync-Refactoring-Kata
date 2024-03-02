@@ -1,12 +1,12 @@
-package codingdojo;
+package codingdojo.domain.entity;
 
-public interface CustomerDataLayer {
+import codingdojo.domain.entity.Customer;
+
+public interface CustomerRepository {
 
     Customer updateCustomerRecord(Customer customer);
 
     Customer createCustomerRecord(Customer customer);
-
-    void updateShoppingList(ShoppingList consumerShoppingList);
 
     Customer findByExternalId(String externalId);
 

@@ -1,5 +1,7 @@
 package codingdojo;
 
+import codingdojo.domain.entity.Customer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

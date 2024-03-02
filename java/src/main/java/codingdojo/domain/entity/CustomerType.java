@@ -1,4 +1,4 @@
-package codingdojo;
+package codingdojo.domain.entity;
 
 public enum CustomerType {
     PERSON, COMPANY
